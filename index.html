@@ -184,7 +184,7 @@
   <div class="modal-overlay" id="tipsOverlay">
     <div class="tips-card">
       <div class="tips-header">
-        <h2>🌱 心聲已沉入試算表</h2>
+        <h2>🌱 心聲已沉入樹洞中</h2>
         <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">謝謝你勇敢表達。在回歸繁忙前，為自己練習一個舒壓小技巧吧：</p>
       </div>
 
@@ -218,8 +218,8 @@
   </div>
 
   <script>
-    // ⚠️ 務必填入你先前成功的 Google Apps Script Web App 網址！
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJawpBqyfmxDlq9IiL645YVAA6vF_AeVpRAsw50nDQmFOi5A0nub9eYvKT8-R6eem3/exec';
+    // ⚠️ 請務必將下方網址替換為你部署 Apps Script 後取得的 Web App 網址！
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo9YENp_HpSwfbeinkbZ1nC1auRhoeHY-j9jnuaelc4xaymgClF4XfRCzmrd2zdwqe/exec';
 
     const prefixList = ['深海的', '聽風的話', '等待陽光的', '漫步的', '沉睡的', '發光的'];
     const suffixList = ['時光機', '松果', '雲朵', '微風', '小舟', '海龜'];
@@ -264,27 +264,36 @@
         return;
       }
 
-      // 1. 觸發動畫
+      // 1. 觸發卡片飛入樹洞動畫
       const modalCard = document.getElementById('modalCard');
       modalCard.classList.add('fly-into-hole');
 
-      // 2. 封裝表單資料，傳送給 Google Apps Script 寫入 Excel/試算表
+      // 2. 封裝表單資料
       const formData = new URLSearchParams();
       formData.append('nickname', nickname);
       formData.append('category', selectedCategory);
       formData.append('secret', secret);
       formData.append('colorName', selectedColor);
 
-      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbyJawpBqyfmxDlq9IiL645YVAA6vF_AeVpRAsw50nDQmFOi5A0nub9eYvKT8-R6eem3/exec') {
+      // 3. 發送資料給 Google Apps Script (使用 no-cors 避免跨網域資安阻檔)
+      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxo9YENp_HpSwfbeinkbZ1nC1auRhoeHY-j9jnuaelc4xaymgClF4XfRCzmrd2zdwqe/exec') {
         fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          body: formData
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData.toString()
         })
-        .then(res => console.log("寫入 Google 試算表成功！"))
+        .then(() => {
+          console.log("資料已成功送出至 Google 試算表！");
+        })
         .catch(err => console.error("傳送失敗:", err));
+      } else {
+        console.warn("尚未設定正確的 GOOGLE_SCRIPT_URL！");
       }
 
-      // 3. 動畫完成後：關閉寫信 Modal、清空輸入，並跳出「舒壓小技巧」Modal
+      // 4. 動畫與畫面轉換：關閉寫信 Modal、清空輸入，並跳出「舒壓小技巧」Modal
       setTimeout(() => {
         closeModal();
         modalCard.classList.remove('fly-into-hole');

@@ -355,7 +355,7 @@
 
   <script>
     // 請在此處貼上 Google Apps Script 部署後的 Web App 網址
-    const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTOzToWOahNNgOzWYn72cCCiHP9PzKNHgnh7EtMo1XZHVowQjlemILscg0zvu4H73N/exec';
 
     // 隨機暱稱詞庫
     const prefixList = ['深海的', '聽風的話', '等待陽光的', '漫步的', '沉睡的', '發光的'];
@@ -413,7 +413,7 @@
       };
 
       // 背景默默傳送給 API
-      if (GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxQ4cqCJe6eSdJVDM0M7fGnFvTci30XLNgMKRc1rK_8YZZiycLe7sqVA3ZFRFDoCk9j/exec') {
+      if (GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
         fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',

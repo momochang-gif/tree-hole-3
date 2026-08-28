@@ -219,7 +219,7 @@
 
   <script>
     // ⚠️ 務必填入你先前成功的 Google Apps Script Web App 網址！
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTOzToWOahNNgOzWYn72cCCiHP9PzKNHgnh7EtMo1XZHVowQjlemILscg0zvu4H73N/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJawpBqyfmxDlq9IiL645YVAA6vF_AeVpRAsw50nDQmFOi5A0nub9eYvKT8-R6eem3/exec';
 
     const prefixList = ['深海的', '聽風的話', '等待陽光的', '漫步的', '沉睡的', '發光的'];
     const suffixList = ['時光機', '松果', '雲朵', '微風', '小舟', '海龜'];
@@ -275,7 +275,7 @@
       formData.append('secret', secret);
       formData.append('colorName', selectedColor);
 
-      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxTOzToWOahNNgOzWYn72cCCiHP9PzKNHgnh7EtMo1XZHVowQjlemILscg0zvu4H73N/exec') {
+      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbyJawpBqyfmxDlq9IiL645YVAA6vF_AeVpRAsw50nDQmFOi5A0nub9eYvKT8-R6eem3/exec') {
         fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
           body: formData

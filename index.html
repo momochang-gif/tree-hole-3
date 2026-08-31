@@ -276,7 +276,7 @@
       formData.append('colorName', selectedColor);
 
       // 3. 發送資料給 Google Apps Script (使用 no-cors 避免跨網域資安阻檔)
-      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxo9YENp_HpSwfbeinkbZ1nC1auRhoeHY-j9jnuaelc4xaymgClF4XfRCzmrd2zdwqe/exec') {
+      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
         fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',

@@ -314,20 +314,20 @@
     </div>
   </div>
 
-  <!-- 2. 第一頁：正念小技巧 + 專屬代碼顯示 Modal -->
-  <div class="modal-overlay" id="tipsOverlay">
-    <div class="tips-card">
-      <div class="tips-header">
-        <h2>🌱 心聲已沉入樹洞中</h2>
-        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">謝謝你勇敢表達。這是你本次投遞的匿名專屬代碼：</p>
-      </div>
+  <!-- 第一頁：正念小技巧 + (可選)代碼卡片 Modal -->
+<div class="modal-overlay" id="tipsOverlay">
+  <div class="tips-card">
+    <div class="tips-header">
+      <h2 id="tipsTitle">🌱 心聲已沉入樹洞中</h2>
+      <p id="tipsSubTitle" style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">謝謝你勇敢表達。</p>
+    </div>
 
-      <!-- 專屬代碼區塊 -->
-      <div class="code-display-box">
-        <div class="code-text" id="generatedCodeDisplay">-------</div>
-        <button class="copy-btn" onclick="copyTicketCode()">📋 一鍵複製代碼</button>
-        <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 8px;">🔒 請妥善保存此代碼，日後點擊樹洞首頁「🔍 查詢回信」即可查詢專屬回覆。</p>
-      </div>
+    <!-- 專屬代碼區塊 (動態控制顯示/隱藏) -->
+    <div class="code-display-box" id="codeDisplayBox">
+      <div class="code-text" id="generatedCodeDisplay">-------</div>
+      <button class="copy-btn" onclick="copyTicketCode()">📋 一鍵複製代碼</button>
+      <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 8px;">🔒 請妥善保存此代碼，日後點擊「🔍 查詢回信內容」即可查詢專屬回覆。</p>
+    </div>
 
       <div class="tip-item">
         <div class="tip-title">🧘‍♂️ 正念呼吸</div>
@@ -476,14 +476,61 @@
     }
 
     // 提交悄悄話
-    function submitSecret() {
-      const secret = document.getElementById('secretInput').value;
-      const nickname = document.getElementById('nicknameInput').value || '匿名老師';
+   // 提交悄悄話
+function submitSecret() {
+  const secret = document.getElementById('secretInput').value;
+  const nickname = document.getElementById('nicknameInput').value || '匿名老師';
 
-      if (!secret.trim()) {
-        alert('請先寫下你的悄悄話喔');
-        return;
-      }
+  if (!secret.trim()) {
+    alert('請先寫下你的悄悄話喔');
+    return;
+  }
+
+  // 1. 根據「心願與訴求」判斷是否生成代碼
+  const isNeedReply = (selectedIntent === '想要有人可以回信');
+  
+  if (isNeedReply) {
+    currentGeneratedCode = generateRandomTicketCode();
+    document.getElementById('generatedCodeDisplay').innerText = currentGeneratedCode;
+    document.getElementById('codeDisplayBox').style.display = 'block'; // 顯示代碼區塊
+    document.getElementById('tipsTitle').innerText = '🌱 心聲已沉入樹洞中';
+    document.getElementById('tipsSubTitle').innerText = '謝謝你勇敢表達。這是你本次投遞的匿名專屬代碼：';
+  } else {
+    currentGeneratedCode = ''; // 只是傾聽則不給代碼
+    document.getElementById('codeDisplayBox').style.display = 'none'; // 隱藏代碼區塊
+    document.getElementById('tipsTitle').innerText = '🌱 心聲已封印於樹洞中';
+    document.getElementById('tipsSubTitle').innerText = '謝謝你願意將心中的重量卸下，祝福你有個平靜的休息時光。';
+  }
+
+  const modalCard = document.getElementById('modalCard');
+  modalCard.classList.add('fly-into-hole');
+
+  // 2. 打包資料傳給後端
+  const formData = new URLSearchParams();
+  formData.append('nickname', nickname);
+  formData.append('intent', selectedIntent);
+  formData.append('category', selectedCategory);
+  formData.append('colorName', selectedColor);
+  formData.append('distressLevel', selectedDistressLevel);
+  formData.append('secret', secret);
+  formData.append('ticketCode', isNeedReply ? currentGeneratedCode : '');
+
+  if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
+    fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData.toString()
+    }).catch(err => console.error("傳送失敗:", err));
+  }
+
+  setTimeout(() => {
+    closeModal();
+    modalCard.classList.remove('fly-into-hole');
+    document.getElementById('secretInput').value = '';
+    document.getElementById('tipsOverlay').classList.add('active');
+  }, 800);
+}
 
       // 產生代碼
       currentGeneratedCode = generateRandomTicketCode();

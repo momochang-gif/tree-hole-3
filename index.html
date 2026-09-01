@@ -3,26 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>教師心靈樹洞與舒壓小助手</title>
+  <title>教師心靈樹洞</title>
   <style>
-    /* 「查詢回信內容」次要按鈕樣式 */
-.sub-query-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(79, 209, 197, 0.4);
-  color: var(--accent-glow);
-  padding: 10px 24px;
-  border-radius: 25px;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
-}
-
-.sub-query-btn:hover {
-  background: rgba(79, 209, 197, 0.2);
-  border-color: var(--accent-glow);
-  transform: translateY(-1px);
-}
     :root {
       --bg-color: #070a12;
       --card-bg: rgba(18, 26, 41, 0.93);
@@ -47,18 +29,6 @@
       overflow-x: hidden;
     }
 
-    /* 頂部查詢按鈕 */
-    .top-nav {
-      position: absolute; top: 20px; right: 25px; z-index: 10;
-    }
-    .query-nav-btn {
-      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--accent-glow); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem;
-      cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(4px);
-    }
-    .query-nav-btn:hover { background: rgba(79, 209, 197, 0.2); border-color: var(--accent-glow); }
-
-    /* 背景與樹洞視覺 */
     .stars {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
@@ -103,6 +73,8 @@
       100% { fill: #064e3b; filter: drop-shadow(0 0 3px #10b981); }
     }
 
+    /* 主按鈕區塊 */
+    .btn-action-group { display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .open-modal-btn {
       position: relative; z-index: 1;
       background: linear-gradient(135deg, #059669, #2563eb); color: white; border: none;
@@ -110,6 +82,13 @@
       box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4); transition: all 0.3s ease;
     }
     .open-modal-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(5, 150, 105, 0.6); }
+
+    .sub-query-btn {
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(79, 209, 197, 0.4);
+      color: var(--accent-glow); padding: 10px 24px; border-radius: 25px; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(4px);
+    }
+    .sub-query-btn:hover { background: rgba(79, 209, 197, 0.2); border-color: var(--accent-glow); transform: translateY(-1px); }
 
     /* Modal 通用 */
     .modal-overlay {
@@ -207,7 +186,6 @@
       border-radius: 10px; cursor: pointer; font-size: 0.95rem; text-align: center;
     }
 
-    /* 查詢展示卡片 */
     .reply-box {
       background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(79, 209, 197, 0.3);
       border-radius: 12px; padding: 16px; margin-top: 15px;
@@ -220,26 +198,26 @@
   <div class="forest-ambient"></div>
 
   <div class="container">
-  <h1>教師心靈樹洞</h1>
-  <p class="subtitle">這裡不對外公開，任何人皆無法看見。<br>將累積的心聲，沉入發光的神木中吧。</p>
+    <h1>教師心靈樹洞</h1>
+    <p class="subtitle">這裡不對外公開，任何人皆無法看見。<br>將累積的心聲，沉入發光的神木中吧。</p>
 
-  <div class="tree-container" onclick="openModal()">
-    <div class="tree-backglow"></div>
-    <svg class="tree-svg" viewBox="0 0 200 240">
-      <polygon points="85,220 115,220 110,130 90,130" fill="#1f2937" />
-      <polygon points="100,20 40,90 160,90" fill="#064e3b" stroke="#34d399" stroke-width="1"/>
-      <polygon points="100,50 30,130 170,130" fill="#047857" stroke="#059669" stroke-width="1" opacity="0.8"/>
-      <polygon points="100,80 20,170 180,170" fill="#065f46" stroke="#10b981" stroke-width="1" opacity="0.9"/>
-      <ellipse class="tree-hole" cx="100" cy="160" rx="12" ry="18" />
-    </svg>
-  </div>
+    <div class="tree-container" onclick="openModal()">
+      <div class="tree-backglow"></div>
+      <svg class="tree-svg" viewBox="0 0 200 240">
+        <polygon points="85,220 115,220 110,130 90,130" fill="#1f2937" />
+        <polygon points="100,20 40,90 160,90" fill="#064e3b" stroke="#34d399" stroke-width="1"/>
+        <polygon points="100,50 30,130 170,130" fill="#047857" stroke="#059669" stroke-width="1" opacity="0.8"/>
+        <polygon points="100,80 20,170 180,170" fill="#065f46" stroke="#10b981" stroke-width="1" opacity="0.9"/>
+        <ellipse class="tree-hole" cx="100" cy="160" rx="12" ry="18" />
+      </svg>
+    </div>
 
-  <!-- 按鈕組合：傾訴秘密 + 查詢回信內容 -->
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-    <button class="open-modal-btn" onclick="openModal()">傾訴秘密</button>
-    <button class="sub-query-btn" onclick="openQueryModal()">🔍 查詢回信內容</button>
+    <!-- 主按鈕區域 -->
+    <div class="btn-action-group">
+      <button class="open-modal-btn" onclick="openModal()">傾訴秘密</button>
+      <button class="sub-query-btn" onclick="openQueryModal()">🔍 查詢回信內容</button>
+    </div>
   </div>
-</div>
 
   <!-- 1. 寫悄悄話 Modal -->
   <div class="modal-overlay" id="modalOverlay">
@@ -314,20 +292,20 @@
     </div>
   </div>
 
-  <!-- 第一頁：正念小技巧 + (可選)代碼卡片 Modal -->
-<div class="modal-overlay" id="tipsOverlay">
-  <div class="tips-card">
-    <div class="tips-header">
-      <h2 id="tipsTitle">🌱 心聲已沉入樹洞中</h2>
-      <p id="tipsSubTitle" style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">謝謝你勇敢表達。</p>
-    </div>
+  <!-- 2. 正念小技巧 + (可選)代碼卡片 Modal -->
+  <div class="modal-overlay" id="tipsOverlay">
+    <div class="tips-card">
+      <div class="tips-header">
+        <h2 id="tipsTitle">🌱 心聲已沉入樹洞中</h2>
+        <p id="tipsSubTitle" style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">謝謝你勇敢表達。</p>
+      </div>
 
-    <!-- 專屬代碼區塊 (動態控制顯示/隱藏) -->
-    <div class="code-display-box" id="codeDisplayBox">
-      <div class="code-text" id="generatedCodeDisplay">-------</div>
-      <button class="copy-btn" onclick="copyTicketCode()">📋 一鍵複製代碼</button>
-      <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 8px;">🔒 請妥善保存此代碼，日後點擊「🔍 查詢回信內容」即可查詢專屬回覆。</p>
-    </div>
+      <!-- 專屬代碼區塊 (自動依選擇隱藏/顯示) -->
+      <div class="code-display-box" id="codeDisplayBox">
+        <div class="code-text" id="generatedCodeDisplay">-------</div>
+        <button class="copy-btn" onclick="copyTicketCode()">📋 一鍵複製代碼</button>
+        <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 8px;">🔒 請妥善保存此代碼，日後點擊「🔍 查詢回信內容」即可查詢專屬回覆。</p>
+      </div>
 
       <div class="tip-item">
         <div class="tip-title">🧘‍♂️ 正念呼吸</div>
@@ -335,23 +313,8 @@
       </div>
 
       <div class="tip-item">
-        <div class="tip-title">💆‍♀️ 身體掃描</div>
-        <div class="tip-desc">意識放回緊繃的肩膀、眉頭或下巴，主動放鬆肌肉。</div>
-      </div>
-
-      <div class="tip-item">
-        <div class="tip-title">☕ 課間微休息</div>
-        <div class="tip-desc">可以暫時離開座位走到窗邊看遠方，讓大腦短暫當機重啟。</div>
-      </div>
-
-      <div class="tip-item">
         <div class="tip-title">🛡️ 向完美說不</div>
         <div class="tip-desc">接受教學、班級經營、家長、夥伴不可能完美，降低自我苛求。</div>
-      </div>
-
-      <div class="tip-item">
-        <div class="tip-title">🚪 建立下班界線</div>
-        <div class="tip-desc">非緊急事項暫不回覆訊息，保護個人休息時間。</div>
       </div>
 
       <div class="btn-group-dual">
@@ -361,7 +324,7 @@
     </div>
   </div>
 
-  <!-- 3. 第二頁：專業支持資源 Modal -->
+  <!-- 3. 支持資源 Modal -->
   <div class="modal-overlay" id="resourcesOverlay">
     <div class="tips-card">
       <div class="tips-header">
@@ -403,12 +366,11 @@
       <div class="form-group">
         <label>請輸入查詢代碼</label>
         <div class="nickname-box">
-          <input type="text" id="queryCodeInput" placeholder="例如：k9X-2mP7" style="text-transform: uppercase;">
+          <input type="text" id="queryCodeInput" placeholder="例如：K9X-2MP7" style="text-transform: uppercase;">
           <button class="dice-btn" style="background: #059669;" onclick="performQuery()">送出查詢</button>
         </div>
       </div>
 
-      <!-- 查詢結果顯示區域 -->
       <div id="queryResultArea" style="display: none;"></div>
 
       <div class="btn-group-dual" style="margin-top: 15px;">
@@ -418,6 +380,7 @@
   </div>
 
   <script>
+    // ⚠️ 請務必替換為你重新部署後的 Google Apps Script 網址 ⚠️
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQdPO84G_EhpmStLLGZgFUKW_d_rEBnBZD3lRF2CbVhpX0v4VqTB5MkY7VKaXlwRlc/exec';
 
     const prefixList = ['深海的', '聽風的話', '等待陽光的', '漫步的', '沉睡的', '發光的'];
@@ -429,7 +392,6 @@
     let selectedDistressLevel = 5;
     let currentGeneratedCode = '';
 
-    // 生成隨機代碼（例如：k9X-2mP7）
     function generateRandomTicketCode() {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       let code = '';
@@ -475,66 +437,29 @@
       });
     }
 
-    // 提交悄悄話
-   // 提交悄悄話
-function submitSecret() {
-  const secret = document.getElementById('secretInput').value;
-  const nickname = document.getElementById('nicknameInput').value || '匿名老師';
+    function submitSecret() {
+      const secret = document.getElementById('secretInput').value;
+      const nickname = document.getElementById('nicknameInput').value || '匿名老師';
 
-  if (!secret.trim()) {
-    alert('請先寫下你的悄悄話喔');
-    return;
-  }
+      if (!secret.trim()) {
+        alert('請先寫下你的悄悄話喔');
+        return;
+      }
 
-  // 1. 根據「心願與訴求」判斷是否生成代碼
-  const isNeedReply = (selectedIntent === '想要有人可以回信');
-  
-  if (isNeedReply) {
-    currentGeneratedCode = generateRandomTicketCode();
-    document.getElementById('generatedCodeDisplay').innerText = currentGeneratedCode;
-    document.getElementById('codeDisplayBox').style.display = 'block'; // 顯示代碼區塊
-    document.getElementById('tipsTitle').innerText = '🌱 心聲已沉入樹洞中';
-    document.getElementById('tipsSubTitle').innerText = '謝謝你勇敢表達。這是你本次投遞的匿名專屬代碼：';
-  } else {
-    currentGeneratedCode = ''; // 只是傾聽則不給代碼
-    document.getElementById('codeDisplayBox').style.display = 'none'; // 隱藏代碼區塊
-    document.getElementById('tipsTitle').innerText = '🌱 心聲已封印於樹洞中';
-    document.getElementById('tipsSubTitle').innerText = '謝謝你願意將心中的重量卸下，祝福你有個平靜的休息時光。';
-  }
-
-  const modalCard = document.getElementById('modalCard');
-  modalCard.classList.add('fly-into-hole');
-
-  // 2. 打包資料傳給後端
-  const formData = new URLSearchParams();
-  formData.append('nickname', nickname);
-  formData.append('intent', selectedIntent);
-  formData.append('category', selectedCategory);
-  formData.append('colorName', selectedColor);
-  formData.append('distressLevel', selectedDistressLevel);
-  formData.append('secret', secret);
-  formData.append('ticketCode', isNeedReply ? currentGeneratedCode : '');
-
-  if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
-    fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formData.toString()
-    }).catch(err => console.error("傳送失敗:", err));
-  }
-
-  setTimeout(() => {
-    closeModal();
-    modalCard.classList.remove('fly-into-hole');
-    document.getElementById('secretInput').value = '';
-    document.getElementById('tipsOverlay').classList.add('active');
-  }, 800);
-}
-
-      // 產生代碼
-      currentGeneratedCode = generateRandomTicketCode();
-      document.getElementById('generatedCodeDisplay').innerText = currentGeneratedCode;
+      const isNeedReply = (selectedIntent === '想要有人可以回信');
+      
+      if (isNeedReply) {
+        currentGeneratedCode = generateRandomTicketCode();
+        document.getElementById('generatedCodeDisplay').innerText = currentGeneratedCode;
+        document.getElementById('codeDisplayBox').style.display = 'block';
+        document.getElementById('tipsTitle').innerText = '🌱 心聲已沉入樹洞中';
+        document.getElementById('tipsSubTitle').innerText = '謝謝你勇敢表達。這是你本次投遞的匿名專屬代碼：';
+      } else {
+        currentGeneratedCode = '';
+        document.getElementById('codeDisplayBox').style.display = 'none';
+        document.getElementById('tipsTitle').innerText = '🌱 心聲已封印於樹洞中';
+        document.getElementById('tipsSubTitle').innerText = '謝謝你願意將心中的重量卸下，祝福你有個平靜的休息時光。';
+      }
 
       const modalCard = document.getElementById('modalCard');
       modalCard.classList.add('fly-into-hole');
@@ -546,7 +471,7 @@ function submitSecret() {
       formData.append('colorName', selectedColor);
       formData.append('distressLevel', selectedDistressLevel);
       formData.append('secret', secret);
-      formData.append('ticketCode', currentGeneratedCode);
+      formData.append('ticketCode', isNeedReply ? currentGeneratedCode : '');
 
       if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
         fetch(GOOGLE_SCRIPT_URL, {
@@ -582,7 +507,6 @@ function submitSecret() {
     }
     function closeResourcesModal() { document.getElementById('resourcesOverlay').classList.remove('active'); }
 
-    // 代碼查詢 modal 控制邏輯
     function openQueryModal() {
       document.getElementById('queryResultArea').style.display = 'none';
       document.getElementById('queryCodeInput').value = '';
@@ -590,7 +514,6 @@ function submitSecret() {
     }
     function closeQueryModal() { document.getElementById('queryOverlay').classList.remove('active'); }
 
-    // 執行查詢 (與後端 GET 對接)
     function performQuery() {
       const code = document.getElementById('queryCodeInput').value.trim();
       const resultArea = document.getElementById('queryResultArea');

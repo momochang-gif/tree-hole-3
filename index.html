@@ -60,7 +60,7 @@
     h1 { font-size: 2.2rem; margin-bottom: 8px; color: #f1f5f9; text-shadow: 0 0 12px rgba(79, 209, 197, 0.4); }
     .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.5; }
 
-    /* 樹洞與動畫 (加上樹後綠色微光) */
+    /* 樹洞與動畫 (樹後綠色微光) */
     .tree-container { position: relative; width: 220px; height: 260px; margin: 0 auto 20px auto; cursor: pointer; }
     
     .tree-backglow {
@@ -107,9 +107,10 @@
 
     .modal-card {
       background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.15);
-      width: 90%; max-width: 460px; padding: 28px; border-radius: 20px;
+      width: 90%; max-width: 480px; padding: 28px; border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.6); position: relative;
       transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      max-height: 90vh; overflow-y: auto;
     }
     .modal-card.fly-into-hole { transform: scale(0.05) translate(0, -600px); opacity: 0; }
 
@@ -142,9 +143,31 @@
     }
     .cat-btn.selected { background: rgba(79, 209, 197, 0.2); border-color: var(--accent-glow); color: #fff; }
 
-    .color-picker { display: flex; gap: 12px; }
-    .color-option { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+    /* 情緒微光 Color Picker & Tooltip */
+    .color-picker-wrapper { display: flex; flex-direction: column; gap: 6px; }
+    .color-picker { display: flex; gap: 10px; }
+    .color-option {
+      position: relative; width: 32px; height: 32px; border-radius: 50%;
+      cursor: pointer; border: 2px solid transparent; transition: transform 0.2s;
+    }
     .color-option.selected { transform: scale(1.2); border-color: white; }
+    .color-hint {
+      font-size: 0.85rem; color: #38bdf8; min-height: 1.2em; font-weight: 500;
+      transition: opacity 0.2s ease;
+    }
+
+    /* 困擾程度 1-10 量尺 */
+    .scale-container { display: flex; gap: 4px; justify-content: space-between; margin-top: 4px; }
+    .scale-btn {
+      flex: 1; padding: 8px 0; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12); color: var(--text-muted);
+      border-radius: 6px; font-size: 0.85rem; cursor: pointer; text-align: center; transition: all 0.2s;
+    }
+    .scale-btn:hover { background: rgba(255, 255, 255, 0.15); }
+    .scale-btn.selected {
+      background: #059669; border-color: #34d399; color: white; font-weight: bold; transform: translateY(-1px);
+    }
+    .scale-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
 
     .submit-btn {
       width: 100%; background: linear-gradient(135deg, #059669, #2563eb);
@@ -172,7 +195,7 @@
     }
     .btn-close {
       flex: 1; background: #334155; color: white; border: none; padding: 12px;
-      border-radius: 10px; cursor: pointer; font-size: 0.95rem; text-align: center;
+      border-radius: 10px; cursor: pointer; font-size: 0.95rem; text-align: center; transition: background 0.2s;
     }
     .btn-secondary:hover, .btn-close:hover { opacity: 0.9; }
   </style>
@@ -232,13 +255,41 @@
         </div>
       </div>
 
+      <!-- 情緒微光：增加黃、紅、藍、綠、紫、灰，滑鼠移入時顯示提示 -->
       <div class="form-group">
         <label>情緒微光</label>
-        <div class="color-picker">
-          <div class="color-option selected" style="background: #3182ce;" data-color="憂鬱藍" onclick="selectColor(this)"></div>
-          <div class="color-option" style="background: #ecc94b;" data-color="溫暖黃" onclick="selectColor(this)"></div>
-          <div class="color-option" style="background: #805ad5;" data-color="秘密紫" onclick="selectColor(this)"></div>
-          <div class="color-option" style="background: #ed64a6;" data-color="悸動粉" onclick="selectColor(this)"></div>
+        <div class="color-picker-wrapper">
+          <div class="color-picker">
+            <div class="color-option" style="background: #ecc94b;" data-color="溫暖黃" data-label="黃色 = 喜悅開心" onclick="selectColor(this)"></div>
+            <div class="color-option" style="background: #e53e3e;" data-color="憤怒紅" data-label="紅色 = 憤怒生氣" onclick="selectColor(this)"></div>
+            <div class="color-option selected" style="background: #3182ce;" data-color="憂鬱藍" data-label="藍色 = 哀傷" onclick="selectColor(this)"></div>
+            <div class="color-option" style="background: #38a169;" data-color="緊張綠" data-label="綠色 = 緊張/焦慮" onclick="selectColor(this)"></div>
+            <div class="color-option" style="background: #805ad5;" data-color="秘密紫" data-label="紫色 = 恐懼害怕" onclick="selectColor(this)"></div>
+            <div class="color-option" style="background: #718096;" data-color="失落灰" data-label="灰色 = 失落無助" onclick="selectColor(this)"></div>
+          </div>
+          <div class="color-hint" id="colorHint">藍色 = 哀傷</div>
+        </div>
+      </div>
+
+      <!-- 困擾程度量尺 (1-10) -->
+      <div class="form-group">
+        <label>當前困擾程度 (1 - 10 分)</label>
+        <div class="scale-container" id="scaleContainer">
+          <div class="scale-btn" onclick="selectScale(1)">1</div>
+          <div class="scale-btn" onclick="selectScale(2)">2</div>
+          <div class="scale-btn" onclick="selectScale(3)">3</div>
+          <div class="scale-btn" onclick="selectScale(4)">4</div>
+          <div class="scale-btn selected" onclick="selectScale(5)">5</div>
+          <div class="scale-btn" onclick="selectScale(6)">6</div>
+          <div class="scale-btn" onclick="selectScale(7)">7</div>
+          <div class="scale-btn" onclick="selectScale(8)">8</div>
+          <div class="scale-btn" onclick="selectScale(9)">9</div>
+          <div class="scale-btn" onclick="selectScale(10)">10</div>
+        </div>
+        <div class="scale-labels">
+          <span>1 (輕微)</span>
+          <span>5 (中度困擾)</span>
+          <span>10 (極度痛苦)</span>
         </div>
       </div>
 
@@ -286,12 +337,12 @@
 
       <div class="btn-group-dual">
         <button class="btn-secondary" onclick="showResourcesModal()">你還可以...</button>
-        <button class="btn-close" onclick="closeTipsModal()">回到當下</button>
+        <button class="btn-close" onclick="closeTipsModal()">回到樹洞畫面</button>
       </div>
     </div>
   </div>
 
-  <!-- 3. 第二頁：專業支持資源 Modal -->
+  <!-- 3. 第二頁：專業支持資源 Modal（增加回到上一頁選項） -->
   <div class="modal-overlay" id="resourcesOverlay">
     <div class="tips-card">
       <div class="tips-header">
@@ -321,13 +372,14 @@
       </div>
 
       <div class="btn-group-dual">
-        <button class="btn-close" style="flex: 2;" onclick="closeResourcesModal()">收下這份力量，回到當下</button>
+        <button class="btn-close" onclick="backToTipsModal()">← 回上一頁</button>
+        <button class="btn-secondary" onclick="closeResourcesModal()">回到樹洞畫面</button>
       </div>
     </div>
   </div>
 
   <script>
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo9YENp_HpSwfbeinkbZ1nC1auRhoeHY-j9jnuaelc4xaymgClF4XfRCzmrd2zdwqe/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQdPO84G_EhpmStLLGZgFUKW_d_rEBnBZD3lRF2CbVhpX0v4VqTB5MkY7VKaXlwRlc/exec';
 
     const prefixList = ['深海的', '聽風的話', '等待陽光的', '漫步的', '沉睡的', '發光的'];
     const suffixList = ['時光機', '松果', '雲朵', '微風', '小舟', '海龜'];
@@ -335,6 +387,7 @@
     let selectedCategory = '工作';
     let selectedColor = '憂鬱藍';
     let selectedIntent = '只是想要有人傾聽';
+    let selectedDistressLevel = 5;
 
     function generateNickname() {
       const p = prefixList[Math.floor(Math.random() * prefixList.length)];
@@ -369,6 +422,32 @@
       document.querySelectorAll('.color-option').forEach(c => c.classList.remove('selected'));
       el.classList.add('selected');
       selectedColor = el.getAttribute('data-color');
+      document.getElementById('colorHint').innerText = el.getAttribute('data-label');
+    }
+
+    // 動態監聽 Hover 事件顯示情緒說明
+    document.querySelectorAll('.color-option').forEach(opt => {
+      opt.addEventListener('mouseenter', function() {
+        document.getElementById('colorHint').innerText = this.getAttribute('data-label');
+      });
+      opt.addEventListener('mouseleave', function() {
+        const selectedOpt = document.querySelector('.color-option.selected');
+        if (selectedOpt) {
+          document.getElementById('colorHint').innerText = selectedOpt.getAttribute('data-label');
+        }
+      });
+    });
+
+    function selectScale(val) {
+      selectedDistressLevel = val;
+      const btns = document.querySelectorAll('.scale-btn');
+      btns.forEach((btn, idx) => {
+        if (idx + 1 === val) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      });
     }
 
     function submitSecret() {
@@ -387,8 +466,9 @@
       formData.append('nickname', nickname);
       formData.append('intent', selectedIntent);
       formData.append('category', selectedCategory);
-      formData.append('secret', secret);
       formData.append('colorName', selectedColor);
+      formData.append('distressLevel', selectedDistressLevel);
+      formData.append('secret', secret);
 
       if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
         fetch(GOOGLE_SCRIPT_URL, {
@@ -417,10 +497,16 @@
       document.getElementById('tipsOverlay').classList.remove('active');
     }
 
-    // 切換至第二階段專業資源 Modal
+    // 切換至第二頁（專業資源 Modal）
     function showResourcesModal() {
       document.getElementById('tipsOverlay').classList.remove('active');
       document.getElementById('resourcesOverlay').classList.add('active');
+    }
+
+    // 第二頁返回第一頁（正念小技巧）
+    function backToTipsModal() {
+      document.getElementById('resourcesOverlay').classList.remove('active');
+      document.getElementById('tipsOverlay').classList.add('active');
     }
 
     function closeResourcesModal() {

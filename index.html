@@ -6,9 +6,10 @@
   <title>教師心靈樹洞與舒壓小助手</title>
   <style>
     :root {
-      --bg-color: #0b0f19;
-      --card-bg: rgba(22, 30, 46, 0.9);
+      --bg-color: #070a12;
+      --card-bg: rgba(18, 26, 41, 0.93);
       --accent-glow: #4fd1c5;
+      --forest-glow: #10b981;
       --text-main: #e2e8f0;
       --text-muted: #94a3b8;
     }
@@ -25,8 +26,10 @@
       justify-content: center;
       position: relative;
       padding: 20px 0;
+      overflow-x: hidden;
     }
 
+    /* 森林背景微光與星空 */
     .stars {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
@@ -35,31 +38,68 @@
       background-size: 200px 200px; z-index: 0; opacity: 0.3; pointer-events: none;
     }
 
+    .forest-ambient {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 45%, rgba(0, 0, 0, 0) 70%);
+      z-index: 0;
+      pointer-events: none;
+      animation: ambientPulse 8s infinite ease-in-out;
+    }
+
+    @keyframes ambientPulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
     .container { z-index: 1; text-align: center; padding: 20px; max-width: 600px; width: 90%; }
-    h1 { font-size: 2.2rem; margin-bottom: 8px; color: #f1f5f9; text-shadow: 0 0 10px rgba(79, 209, 197, 0.3); }
+    h1 { font-size: 2.2rem; margin-bottom: 8px; color: #f1f5f9; text-shadow: 0 0 12px rgba(79, 209, 197, 0.4); }
     .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.5; }
 
-    /* 樹洞與動畫 */
-    .tree-container { position: relative; width: 200px; height: 240px; margin: 0 auto 30px auto; cursor: pointer; }
-    .tree-svg { width: 100%; height: 100%; filter: drop-shadow(0 0 15px rgba(79, 209, 197, 0.2)); }
+    /* 樹洞與動畫 (加上樹後綠色微光) */
+    .tree-container { position: relative; width: 220px; height: 260px; margin: 0 auto 20px auto; cursor: pointer; }
+    
+    .tree-backglow {
+      position: absolute;
+      top: 20px; left: 50%;
+      transform: translateX(-50%);
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(79, 209, 197, 0.2) 60%, rgba(0,0,0,0) 100%);
+      filter: blur(20px);
+      z-index: 0;
+      animation: treeGlow 4s infinite ease-in-out alternate;
+    }
+
+    @keyframes treeGlow {
+      0% { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1.15); }
+    }
+
+    .tree-svg { position: relative; z-index: 1; width: 100%; height: 100%; filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.3)); }
     .tree-hole { animation: pulse 3s infinite ease-in-out; transform-origin: center; }
     @keyframes pulse {
-      0% { fill: #1a365d; filter: drop-shadow(0 0 2px #4fd1c5); }
-      50% { fill: #2b6cb0; filter: drop-shadow(0 0 12px #4fd1c5); }
-      100% { fill: #1a365d; filter: drop-shadow(0 0 2px #4fd1c5); }
+      0% { fill: #064e3b; filter: drop-shadow(0 0 3px #10b981); }
+      50% { fill: #047857; filter: drop-shadow(0 0 15px #34d399); }
+      100% { fill: #064e3b; filter: drop-shadow(0 0 3px #10b981); }
     }
 
     .open-modal-btn {
-      background: linear-gradient(135deg, #2b6cb0, #4c51bf); color: white; border: none;
-      padding: 14px 28px; font-size: 1.1rem; border-radius: 30px; cursor: pointer;
-      box-shadow: 0 4px 15px rgba(76, 81, 191, 0.4); transition: all 0.3s ease;
+      position: relative; z-index: 1;
+      background: linear-gradient(135deg, #059669, #2563eb); color: white; border: none;
+      padding: 14px 32px; font-size: 1.1rem; border-radius: 30px; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4); transition: all 0.3s ease;
     }
-    .open-modal-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 81, 191, 0.6); }
+    .open-modal-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(5, 150, 105, 0.6); }
 
     /* Modal 通用樣式 */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(6px);
       display: flex; justify-content: center; align-items: center; z-index: 100;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
@@ -67,26 +107,38 @@
 
     .modal-card {
       background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.15);
-      width: 90%; max-width: 450px; padding: 30px; border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
+      width: 90%; max-width: 460px; padding: 28px; border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6); position: relative;
       transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
     .modal-card.fly-into-hole { transform: scale(0.05) translate(0, -600px); opacity: 0; }
 
-    .form-group { margin-bottom: 20px; text-align: left; }
+    .form-group { margin-bottom: 18px; text-align: left; }
     label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
     .nickname-box { display: flex; gap: 10px; }
     input[type="text"], textarea {
-      width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.15);
+      width: 100%; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 10px; padding: 12px; color: white; font-size: 0.95rem; outline: none;
     }
     input[type="text"]:focus, textarea:focus { border-color: var(--accent-glow); }
-    .dice-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0 15px; border-radius: 10px; cursor: pointer; white-space: nowrap; }
+    .dice-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0 14px; border-radius: 10px; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+    .dice-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+    /* 期望回應選項 */
+    .intent-options { display: flex; gap: 12px; }
+    .intent-btn {
+      flex: 1; padding: 10px; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15); color: var(--text-muted);
+      border-radius: 10px; font-size: 0.88rem; cursor: pointer; text-align: center; transition: all 0.2s;
+    }
+    .intent-btn.selected {
+      background: rgba(16, 185, 129, 0.25); border-color: var(--forest-glow); color: #fff; font-weight: 500;
+    }
 
     .category-group { display: flex; flex-wrap: wrap; gap: 8px; }
     .cat-btn {
       background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15);
-      color: var(--text-muted); padding: 8px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+      color: var(--text-muted); padding: 7px 13px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
     }
     .cat-btn.selected { background: rgba(79, 209, 197, 0.2); border-color: var(--accent-glow); color: #fff; }
 
@@ -95,41 +147,52 @@
     .color-option.selected { transform: scale(1.2); border-color: white; }
 
     .submit-btn {
-      width: 100%; background: linear-gradient(135deg, #319795, #2b6cb0);
+      width: 100%; background: linear-gradient(135deg, #059669, #2563eb);
       color: white; border: none; padding: 12px; border-radius: 10px; font-size: 1rem; cursor: pointer; margin-top: 10px;
+      font-weight: 500;
     }
     .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
 
-    /* 舒壓小技巧 Modal */
+    /* 舒壓與資源卡片 Modal */
     .tips-card {
-      background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.15); width: 90%; max-width: 550px;
+      background: #111827; border: 1px solid rgba(255, 255, 255, 0.15); width: 90%; max-width: 520px;
       max-height: 85vh; overflow-y: auto; padding: 25px; border-radius: 20px; color: #f8fafc; text-align: left;
     }
     .tips-header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-    .tip-item { background: rgba(255,255,255,0.05); border-left: 4px solid var(--accent-glow); padding: 12px 15px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+    .tip-item { background: rgba(255,255,255,0.04); border-left: 4px solid var(--forest-glow); padding: 12px 15px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
     .tip-title { font-weight: bold; color: var(--accent-glow); margin-bottom: 4px; font-size: 0.95rem; }
     .tip-desc { font-size: 0.88rem; color: #cbd5e1; line-height: 1.5; }
-    .close-tips-btn {
-      width: 100%; background: #334155; color: white; border: none; padding: 10px;
-      border-radius: 10px; margin-top: 15px; cursor: pointer; font-size: 0.95rem;
+    .tip-desc a { color: #38bdf8; text-decoration: none; word-break: break-all; }
+    .tip-desc a:hover { text-decoration: underline; }
+
+    .btn-group-dual { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-secondary {
+      flex: 1; background: linear-gradient(135deg, #059669, #0d9488); color: white; border: none; padding: 12px;
+      border-radius: 10px; cursor: pointer; font-size: 0.95rem; text-align: center; transition: opacity 0.2s;
     }
-    .close-tips-btn:hover { background: #475569; }
+    .btn-close {
+      flex: 1; background: #334155; color: white; border: none; padding: 12px;
+      border-radius: 10px; cursor: pointer; font-size: 0.95rem; text-align: center;
+    }
+    .btn-secondary:hover, .btn-close:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
 
   <div class="stars"></div>
+  <div class="forest-ambient"></div>
 
   <div class="container">
     <h1>教師心靈樹洞</h1>
     <p class="subtitle">這裡不對外公開，任何人皆無法看見。<br>將累積的心聲，沉入發光的神木中吧。</p>
 
     <div class="tree-container" onclick="openModal()">
+      <div class="tree-backglow"></div>
       <svg class="tree-svg" viewBox="0 0 200 240">
-        <polygon points="85,220 115,220 110,130 90,130" fill="#2d3748" />
-        <polygon points="100,20 40,90 160,90" fill="#1a202c" stroke="#4fd1c5" stroke-width="1"/>
-        <polygon points="100,50 30,130 170,130" fill="#2d3748" stroke="#319795" stroke-width="1" opacity="0.8"/>
-        <polygon points="100,80 20,170 180,170" fill="#1a202c" stroke="#2b6cb0" stroke-width="1" opacity="0.9"/>
+        <polygon points="85,220 115,220 110,130 90,130" fill="#1f2937" />
+        <polygon points="100,20 40,90 160,90" fill="#064e3b" stroke="#34d399" stroke-width="1"/>
+        <polygon points="100,50 30,130 170,130" fill="#047857" stroke="#059669" stroke-width="1" opacity="0.8"/>
+        <polygon points="100,80 20,170 180,170" fill="#065f46" stroke="#10b981" stroke-width="1" opacity="0.9"/>
         <ellipse class="tree-hole" cx="100" cy="160" rx="12" ry="18" />
       </svg>
     </div>
@@ -143,10 +206,18 @@
       <button class="close-btn" onclick="closeModal()">✕</button>
       
       <div class="form-group">
-        <label>虛擬暱稱</label>
+        <label>虛擬暱稱（可自訂或隨機產生）</label>
         <div class="nickname-box">
-          <input type="text" id="nicknameInput" readonly>
+          <input type="text" id="nicknameInput" placeholder="請輸入暱稱...">
           <button class="dice-btn" onclick="generateNickname()">🎲 隨機</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>你的心願與訴求</label>
+        <div class="intent-options">
+          <div class="intent-btn selected" onclick="selectIntent(this, '只是想要有人傾聽')">🎧 只是想要有人傾聽</div>
+          <div class="intent-btn" onclick="selectIntent(this, '想要有人可以回信')">✉️ 想要有人可以回信</div>
         </div>
       </div>
 
@@ -180,7 +251,7 @@
     </div>
   </div>
 
-  <!-- 2. 舒壓小技巧 Modal（投遞成功後自動跳出） -->
+  <!-- 2. 第一頁：正念小技巧 Modal -->
   <div class="modal-overlay" id="tipsOverlay">
     <div class="tips-card">
       <div class="tips-header">
@@ -213,12 +284,49 @@
         <div class="tip-desc">非緊急事項暫不回覆訊息，保護個人休息時間。</div>
       </div>
 
-      <button class="close-tips-btn" onclick="closeTipsModal()">收下這份力量，回到當下</button>
+      <div class="btn-group-dual">
+        <button class="btn-secondary" onclick="showResourcesModal()">你還可以...</button>
+        <button class="btn-close" onclick="closeTipsModal()">回到當下</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 第二頁：專業支持資源 Modal -->
+  <div class="modal-overlay" id="resourcesOverlay">
+    <div class="tips-card">
+      <div class="tips-header">
+        <h2>🤝 陪伴與諮詢支持資源</h2>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">當你需要進一步專業協助時，這些管道一直都在：</p>
+      </div>
+
+      <div class="tip-item" style="border-left-color: #38bdf8;">
+        <div class="tip-title">🏫 1. 校內輔導室夥伴諮詢</div>
+        <div class="tip-desc">輔導室的門隨時為你敞開，歡迎隨時過來喝杯熱茶、聊聊近況，我們永遠是你最溫暖的後盾。</div>
+      </div>
+
+      <div class="tip-item" style="border-left-color: #f59e0b;">
+        <div class="tip-title">🏛️ 2. 青壯世代心理健康支持方案</div>
+        <div class="tip-desc">
+          政府提供 15-45 歲符合條件民眾每人 3 次免費心理諮商支持。<br>
+          👉 <a href="https://sps.mohw.gov.tw/mhs" target="_blank" rel="noopener noreferrer">點此前往衛福部方案網站</a>
+        </div>
+      </div>
+
+      <div class="tip-item" style="border-left-color: #10b981;">
+        <div class="tip-title">🌲 3. 森呼吸諮商所（合作夥伴）</div>
+        <div class="tip-desc">
+          與和平實小合作之專業心理諮商團隊，提供專業、隱密且深度的個別與團體諮商服務。<br>
+          👉 <a href="https://www.forest-oasis.com/" target="_blank" rel="noopener noreferrer">點此瀏覽森呼吸諮商所官網</a>
+        </div>
+      </div>
+
+      <div class="btn-group-dual">
+        <button class="btn-close" style="flex: 2;" onclick="closeResourcesModal()">收下這份力量，回到當下</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // ⚠️ 請務必將下方網址替換為你部署 Apps Script 後取得的 Web App 網址！
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo9YENp_HpSwfbeinkbZ1nC1auRhoeHY-j9jnuaelc4xaymgClF4XfRCzmrd2zdwqe/exec';
 
     const prefixList = ['深海的', '聽風的話', '等待陽光的', '漫步的', '沉睡的', '發光的'];
@@ -226,6 +334,7 @@
 
     let selectedCategory = '工作';
     let selectedColor = '憂鬱藍';
+    let selectedIntent = '只是想要有人傾聽';
 
     function generateNickname() {
       const p = prefixList[Math.floor(Math.random() * prefixList.length)];
@@ -234,12 +343,20 @@
     }
 
     function openModal() {
-      generateNickname();
+      if (!document.getElementById('nicknameInput').value) {
+        generateNickname();
+      }
       document.getElementById('modalOverlay').classList.add('active');
     }
 
     function closeModal() {
       document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function selectIntent(btn, intent) {
+      document.querySelectorAll('.intent-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedIntent = intent;
     }
 
     function selectCategory(btn, cat) {
@@ -254,28 +371,25 @@
       selectedColor = el.getAttribute('data-color');
     }
 
-    // 核心資料傳送 + 舒壓小技巧觸發
     function submitSecret() {
       const secret = document.getElementById('secretInput').value;
-      const nickname = document.getElementById('nicknameInput').value;
+      const nickname = document.getElementById('nicknameInput').value || '匿名老師';
 
       if (!secret.trim()) {
         alert('請先寫下你的悄悄話喔');
         return;
       }
 
-      // 1. 觸發卡片飛入樹洞動畫
       const modalCard = document.getElementById('modalCard');
       modalCard.classList.add('fly-into-hole');
 
-      // 2. 封裝表單資料
       const formData = new URLSearchParams();
       formData.append('nickname', nickname);
+      formData.append('intent', selectedIntent);
       formData.append('category', selectedCategory);
       formData.append('secret', secret);
       formData.append('colorName', selectedColor);
 
-      // 3. 發送資料給 Google Apps Script (使用 no-cors 避免跨網域資安阻檔)
       if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
         fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
@@ -285,27 +399,32 @@
           },
           body: formData.toString()
         })
-        .then(() => {
-          console.log("資料已成功送出至 Google 試算表！");
-        })
+        .then(() => console.log("資料已成功送出至 Google 試算表！"))
         .catch(err => console.error("傳送失敗:", err));
-      } else {
-        console.warn("尚未設定正確的 GOOGLE_SCRIPT_URL！");
       }
 
-      // 4. 動畫與畫面轉換：關閉寫信 Modal、清空輸入，並跳出「舒壓小技巧」Modal
       setTimeout(() => {
         closeModal();
         modalCard.classList.remove('fly-into-hole');
         document.getElementById('secretInput').value = '';
         
-        // 開啟舒壓小技巧彈窗
+        // 顯示第一階段舒壓 Modal
         document.getElementById('tipsOverlay').classList.add('active');
       }, 800);
     }
 
     function closeTipsModal() {
       document.getElementById('tipsOverlay').classList.remove('active');
+    }
+
+    // 切換至第二階段專業資源 Modal
+    function showResourcesModal() {
+      document.getElementById('tipsOverlay').classList.remove('active');
+      document.getElementById('resourcesOverlay').classList.add('active');
+    }
+
+    function closeResourcesModal() {
+      document.getElementById('resourcesOverlay').classList.remove('active');
     }
   </script>
 </body>
